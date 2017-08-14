@@ -1,8 +1,10 @@
 package com.coolweather.android;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +40,7 @@ public class ChooseAreaFragment extends Fragment {
     public static final int LEVEL_PROVINCE=0;
     public static final int LEVEL_CITY=1;
     public static final int LEVEL_COUNTY = 2;
-    private ProgressDialog progressDialog;
+//    private ProgressDialog progressDialog;
     private TextView titleText;
     private Button backButton;
     private ListView listView;
@@ -88,6 +90,13 @@ public class ChooseAreaFragment extends Fragment {
                 }else if (currentLevel==LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
+                } else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId=countyList.get(position).getWeatherId();
+                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
+
                 }
             }
         });
@@ -121,7 +130,7 @@ public class ChooseAreaFragment extends Fragment {
 
         }else {
             String address = "http://guolin.tech/api/china";
-            queryFromServer(address,"Province");
+            queryFromServer(address,"province");
         }
     }
     /**
@@ -171,7 +180,7 @@ public class ChooseAreaFragment extends Fragment {
      * 根据传入的地址和类型从服务器上查询省市县数据
      */
     private void queryFromServer(String address,final String type){
-        showProgressDialog();
+//        showProgressDialog();
         HttpUtil.sendOkHtpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -179,7 +188,7 @@ public class ChooseAreaFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        closeProgressDialog();
+//                        closeProgressDialog();
                         Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -200,7 +209,7 @@ public class ChooseAreaFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            closeProgressDialog();
+//                            closeProgressDialog();
                             if ("province".equals(type)){
                                 queryProvinces();
                             }else if ("city".equals(type)){
@@ -216,24 +225,24 @@ public class ChooseAreaFragment extends Fragment {
         });
     }
 
-    /**
-     * 显示进度对话框
-     */
-    private void showProgressDialog(){
-        if (progressDialog==null){
-            progressDialog=new ProgressDialog(getActivity());
-            progressDialog.setMessage("正在加载...");
-            progressDialog.setCancelable(false);
-
-        }
-        progressDialog.show();
-    }
-    /**
-     * 关闭进度对话框
-     */
-    private void closeProgressDialog(){
-        if (progressDialog!=null){
-            progressDialog.dismiss();
-        }
-    }
+//    /**
+//     * 显示进度对话框
+//     */
+//    private void showProgressDialog(){
+//        if (progressDialog==null){
+//            progressDialog=new ProgressDialog(getActivity());
+//            progressDialog.setMessage("正在加载...");
+//            progressDialog.setCancelable(false);
+//
+//        }
+//        progressDialog.show();
+//    }
+//    /**
+//     * 关闭进度对话框
+//     */
+//    private void closeProgressDialog(){
+//        if (progressDialog!=null){
+//            progressDialog.dismiss();
+//        }
+//    }
 }
